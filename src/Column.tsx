@@ -1,13 +1,15 @@
-import React from "react";
 import { AddNewItem } from "./AddNewItem";
 import { ColumnContainer, ColumnTitle } from "./styles";
+import { useAppState } from "./state/AppStateContext";
+import { Card } from "./Card";
 
 /**
  * If "text?:" -  text can be string or undefined
+ * id: We’ll need this value to find the corresponding tasks.
  * */
 type ColumnProps = {
   text: string;
-  children?: React.ReactNode; // We can manually add this for the children props
+  id: string;
 };
 
 /**
@@ -15,14 +17,19 @@ type ColumnProps = {
  * Contain a new task (AddNewItem) in it with the column title and a Card with task
  * Grab children data of <card text="" />
  * */
-export const Column: React.FC<ColumnProps> = ({
-  text,
-  children,
-}: ColumnProps) => {
+export const Column = ({ text, id }: ColumnProps) => {
+  // We’ll call useAppState to get the "getTasksByListId" function.
+  const { getTasksByListId } = useAppState();
+
+  // Then we use "getTasksByListId(id)" to get the tasks to show in this column
+  const tasks = getTasksByListId(id);
+
   return (
     <ColumnContainer>
       <ColumnTitle>{text}</ColumnTitle>
-      {children}
+      {tasks.map((task) => (
+        <Card text={task.text} key={task.id} id={task.id} />
+      ))}
       <AddNewItem
         toggleButtonText="+ Add another task"
         onAdd={console.log}

@@ -19,7 +19,7 @@ export const ColumnContainer = styled.div`
   width: 300px;
   min-height: 40px;
   margin-right: 20px;
-  border-radius: 3px;
+  border-radius: 5px;
   padding: 8px 8px;
   flex-grow: 0;
 `;
