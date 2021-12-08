@@ -1,4 +1,6 @@
 import { Action } from "./actions";
+import { nanoid } from "nanoid";
+import { findItemIndexById, moveItem } from "../utils/arrayUtils";
 
 /**
  * File that will contain our reducer function.
@@ -28,12 +30,43 @@ export type AppState = {
 
 /**
  * Our App Reducer function
+ * Here we renamed the state into draft, so we know that we can mutate it
+ * Also we’ve changed the ADD_LIST case so that it just pushes the new list object to the lists array.
+ * We don’t need to return the new state value anymore, ImmerJS will handle it           automatically.
+ * We also updated the return type of our reducer.
+ * NB: When you when to add new feature, then add a new case "...":{}
  */
-export const appStateReducer = (state: AppState, action: Action): AppState => {
+export const appStateReducer = (
+  draft: AppState,
+  action: Action
+): AppState | void => {
   switch (action.type) {
-    // ...
+    case "ADD_LIST": {
+      draft.lists.push({
+        id: nanoid(),
+        text: action.payload,
+        tasks: [],
+      });
+      break;
+    }
+    case "ADD_TASK": {
+      const { text, listId } = action.payload;
+      const targetListIndex = findItemIndexById(draft.lists, listId);
+      draft.lists[targetListIndex].tasks.push({
+        id: nanoid(),
+        text,
+      });
+      break;
+    }
+    case "MOVE_LIST": {
+      const { draggedId, hoverId } = action.payload;
+      const dragIndex = findItemIndexById(draft.lists, draggedId);
+      const hoverIndex = findItemIndexById(draft.lists, hoverId);
+      draft.lists = moveItem(draft.lists, dragIndex, hoverIndex);
+      break;
+    }
     default: {
-      return state;
+      break;
     }
   }
 };

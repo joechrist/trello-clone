@@ -1,6 +1,7 @@
-import { createContext, useContext, useReducer, Dispatch, FC } from "react";
+import { createContext, useContext, Dispatch, FC } from "react";
 import { appStateReducer, AppState, List, Task } from "./appStateReducer";
 import { Action } from "./actions";
+import { useImmerReducer } from "use-immer";
 
 /**
  *  Define the application data and Data Structure for our app
@@ -47,7 +48,7 @@ const appData: AppState = {
 /**
  * Our context type
  * "getTasksByListId(id: string): Task[]" fct that take an id: string and return an tasks
- * array
+    array
  * dispatch: dispatch methos through the context
  */
 type AppStateContextProps = {
@@ -82,10 +83,11 @@ export const useAppState = () => {
    to make them available to all the context consumers.
  * Our component will accept children as a prop, because we want to be able to wrap
    components into the 'AppStateProvider'. So we specify its type as FC or (React.FC).
+ * Go to src/index.tsx and wrap the App component into the AppStateProvider.
  */
 export const AppStateProvider: FC = ({ children }) => {
-  // React useReducer managment
-  const [state, dispatch] = useReducer(appStateReducer, appData);
+  // Replace the REACT useReducer hook by useImmerReducer from ImmerJS library
+  const [state, dispatch] = useImmerReducer(appStateReducer, appData);
 
   // State managment value from the reducer
   const { lists } = state;

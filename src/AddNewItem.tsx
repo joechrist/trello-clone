@@ -13,7 +13,9 @@ type AddNewItemProps = {
   dark?: boolean;
 };
 
-/** */
+/**
+ * COMPONENT -
+ */
 export const AddNewItem = ({
   onAdd,
   toggleButtonText,

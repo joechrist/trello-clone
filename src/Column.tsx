@@ -2,6 +2,7 @@ import { AddNewItem } from "./AddNewItem";
 import { ColumnContainer, ColumnTitle } from "./styles";
 import { useAppState } from "./state/AppStateContext";
 import { Card } from "./Card";
+import { addTask } from "./state/actions";
 
 /**
  * If "text?:" -  text can be string or undefined
@@ -19,7 +20,7 @@ type ColumnProps = {
  * */
 export const Column = ({ text, id }: ColumnProps) => {
   // We’ll call useAppState to get the "getTasksByListId" function.
-  const { getTasksByListId } = useAppState();
+  const { getTasksByListId, dispatch } = useAppState();
 
   // Then we use "getTasksByListId(id)" to get the tasks to show in this column
   const tasks = getTasksByListId(id);
@@ -32,7 +33,7 @@ export const Column = ({ text, id }: ColumnProps) => {
       ))}
       <AddNewItem
         toggleButtonText="+ Add another task"
-        onAdd={console.log}
+        onAdd={(text) => dispatch(addTask(text, id))}
         dark
       />
     </ColumnContainer>
