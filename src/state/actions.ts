@@ -1,8 +1,14 @@
+import { DragItem } from "../DragItem";
+
 /**
  * Define "Action" type alias with two actions ADD_TASK and ADD_LIST.
- * • ADD_LIST - contains the list title.
- * • ADD_TASK - text is the task text, listId is the reference to the list it belongs to.
- * * MOVE_LIST - drag and drop items in list
+ * @ ADD_LIST - contains the list title.
+ * @ ADD_TASK - text is the task text, listId is the reference to the list it belongs to.
+ * @ MOVE_LIST - drag and drop items in list
+ * @ SET_DRAGGED_ITEM - Hold the DragItem. We need to be able to set it to null if
+     we are not dragging anything. We are not using the undefined here because it would
+     mean that the field could be omitted. In our case it’s not true, it can just be empty
+     sometimes.
  */
 export type Action =
   | {
@@ -19,6 +25,10 @@ export type Action =
         draggedId: string;
         hoverId: string;
       };
+    }
+  | {
+      type: "SET_DRAGGED_ITEM";
+      payload: DragItem | null;
     };
 
 /**
@@ -49,4 +59,13 @@ export const moveList = (draggedId: string, hoverId: string): Action => ({
     draggedId,
     hoverId,
   },
+});
+
+/**
+ * Action creator to set the drag item
+ * @ NB: Implement an action creator when addeda new action
+ */
+export const setDraggedItem = (draggedItem: DragItem | null): Action => ({
+  type: "SET_DRAGGED_ITEM",
+  payload: draggedItem,
 });

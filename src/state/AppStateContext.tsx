@@ -2,6 +2,7 @@ import { createContext, useContext, Dispatch, FC } from "react";
 import { appStateReducer, AppState, List, Task } from "./appStateReducer";
 import { Action } from "./actions";
 import { useImmerReducer } from "use-immer";
+import { DragItem } from "../DragItem";
 
 /**
  *  Define the application data and Data Structure for our app
@@ -25,33 +26,18 @@ const appData: AppState = {
       tasks: [{ id: "c3", text: "Begin to use static typing" }],
     },
   ],
+  draggedItem: null,
 };
-
-// // Define type of our data
-// type Task = {
-//   id: string;
-//   text: string;
-// };
-
-// //
-// type List = {
-//   id: string;
-//   text: string;
-//   tasks: Task[];
-// };
-
-// //
-// export type AppState = {
-//   lists: List[];
-// };
 
 /**
  * Our context type
  * "getTasksByListId(id: string): Task[]" fct that take an id: string and return an tasks
     array
  * dispatch: dispatch methos through the context
+ * Get "draggedItem" data
  */
 type AppStateContextProps = {
+  draggedItem: DragItem | null;
   lists: List[];
   getTasksByListId(id: string): Task[];
   dispatch: Dispatch<Action>;
@@ -69,8 +55,9 @@ const AppStateContext = createContext<AppStateContextProps>(
 );
 
 /**
- * CUSTOM HOOK - Make easier to access "lists" and "getTasksByListId" data
- * Inside this hook, we’ll get the value from the AppStateContext using the useContext
+ * @ CUSTOM HOOK - Make easier to access "lists" and "getTasksByListId" data
+ * @ Get "draggedItem" data as well
+ * @ Inside this hook, we’ll get the value from the AppStateContext using the useContext
    hook and return the result.
  */
 export const useAppState = () => {
@@ -90,7 +77,8 @@ export const AppStateProvider: FC = ({ children }) => {
   const [state, dispatch] = useImmerReducer(appStateReducer, appData);
 
   // State managment value from the reducer
-  const { lists } = state;
+  // Provides the 'draggedItem' and 'lists' through the context
+  const { draggedItem, lists } = state;
 
   /**
    * Method to get Task by List ID
@@ -100,7 +88,10 @@ export const AppStateProvider: FC = ({ children }) => {
   };
 
   return (
-    <AppStateContext.Provider value={{ lists, getTasksByListId, dispatch }}>
+    // value: Come from AppStateContextProps properties
+    <AppStateContext.Provider
+      value={{ draggedItem, lists, getTasksByListId, dispatch }}
+    >
       {children}
     </AppStateContext.Provider>
   );

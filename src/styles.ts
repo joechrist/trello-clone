@@ -12,33 +12,10 @@ export const AppContainer = styled.div`
   width: 100%;
 `;
 
-/** It is a visual representation of a column. It will have grey
-background and rounded corners. */
-export const ColumnContainer = styled.div`
-  background-color: #ebecf0;
-  width: 300px;
-  min-height: 40px;
-  margin-right: 20px;
-  border-radius: 5px;
-  padding: 8px 8px;
-  flex-grow: 0;
-`;
-
 /** It will make the column title bold and add paddings to it. */
 export const ColumnTitle = styled.div`
   padding: 6px 16px 12px;
   font-weight: bold;
-`;
-
-/** It will visually represent the card. */
-export const CardContainer = styled.div`
-  background-color: #fff;
-  cursor: pointer; /*  cards are interactive so we specify cursor: pointer */
-  margin-bottom: 0.5rem;
-  padding: 0.5rem 1rem;
-  max-width: 300px;
-  border-radius: 3px;
-  box-shadow: #091e4240 0px 1px 0px 0px;
 `;
 
 /** Item button props */
@@ -91,4 +68,41 @@ export const NewItemInput = styled.input`
   margin-bottom: 0.5rem;
   padding: 0.5rem 1rem;
   width: 100%;
+`;
+
+/**
+ * Hidden or not when drag item
+ */
+interface DragPreviewContainerProps {
+  isHidden?: boolean;
+}
+
+/**
+ * Hidden or not when drag item
+ */
+export const DragPreviewContainer = styled.div<DragPreviewContainerProps>`
+  opacity: ${(props) => (props.isHidden ? 0.3 : 1)};
+`;
+
+/** It is a visual representation of a column. It will have grey
+background and rounded corners. */
+export const ColumnContainer = styled(DragPreviewContainer)`
+  background-color: #ebecf0;
+  width: 300px;
+  min-height: 40px;
+  margin-right: 20px;
+  border-radius: 5px;
+  padding: 8px 8px;
+  flex-grow: 0;
+`;
+
+/** It will visually represent the card. */
+export const CardContainer = styled(DragPreviewContainer)`
+  background-color: #fff;
+  cursor: pointer; /*  cards are interactive so we specify cursor: pointer */
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 1rem;
+  max-width: 300px;
+  border-radius: 3px;
+  box-shadow: #091e4240 0px 1px 0px 0px;
 `;
