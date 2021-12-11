@@ -75,13 +75,15 @@ export const NewItemInput = styled.input`
  */
 interface DragPreviewContainerProps {
   isHidden?: boolean;
+  isPreview?: boolean;
 }
 
 /**
  * Hidden or not when drag item
  */
 export const DragPreviewContainer = styled.div<DragPreviewContainerProps>`
-  opacity: ${(props) => (props.isHidden ? 0.3 : 1)};
+  transform: ${(props) => (props.isPreview ? "rotate(5deg)" : undefined)};
+  opacity: ${(props) => (props.isHidden ? 0 : 1)};
 `;
 
 /** It is a visual representation of a column. It will have grey
@@ -106,3 +108,38 @@ export const CardContainer = styled(DragPreviewContainer)`
   border-radius: 3px;
   box-shadow: #091e4240 0px 1px 0px 0px;
 `;
+
+/**
+ * Custom container component to render the dragged item preview
+ */
+export const CustomDragLayerContainer = styled.div`
+  height: 100%;
+  left: 0;
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+`;
+
+/**
+ * @ props for getting the dragged item coordinates from react-dnd
+ * @ and generate the styles with the transform attribute to move the preview around.
+ */
+type DragPreviewWrapperProps = {
+  position: {
+    x: number;
+    y: number;
+  };
+};
+
+/**
+ *
+ */
+export const DragPreviewWrapper = styled.div.attrs<DragPreviewWrapperProps>(
+  ({ position: { x, y } }) => ({
+    style: {
+      transform: `translate(${x}px, ${y}px)`,
+    },
+  })
+)<DragPreviewWrapperProps>``;

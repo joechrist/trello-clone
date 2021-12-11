@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { useDrag } from "react-dnd";
 import { useAppState } from "../state/AppStateContext";
 import { DragItem } from "../DragItem";
 import { setDraggedItem } from "../state/actions";
+import { getEmptyImage } from "react-dnd-html5-backend";
 
 /**
  * @ Whenever we start dragging the item, the hook will dispatch a SET_DRAG_ITEM action
@@ -17,7 +19,7 @@ export const useItemDrag = (item: DragItem) => {
   //In our hook we don’t need the Collected Props object,
   // so we skip it which leaves us with this a hanging "comma" in the beginning.
   // we are just skipping the value that we aren’t going to use with this syntax.
-  const [, drag] = useDrag({
+  const [, drag, preview] = useDrag({
     type: item.type,
     item: () => {
       dispatch(setDraggedItem(item));
@@ -25,5 +27,11 @@ export const useItemDrag = (item: DragItem) => {
     },
     end: () => dispatch(setDraggedItem(null)),
   });
+  //
+  useEffect(() => {
+    preview(getEmptyImage(), { captureDraggingState: true });
+  }, [preview]);
+
+  //
   return { drag };
 };

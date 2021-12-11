@@ -3,6 +3,7 @@ import { AppContainer } from "./styles";
 import { Column } from "./Column";
 import { useAppState } from "./state/AppStateContext";
 import { addList } from "./state/actions";
+import { CustomDragLayer } from "./CustomDragLayer";
 
 // Component NAMED EXPORT
 export const App: React.FC = () => {
@@ -11,6 +12,7 @@ export const App: React.FC = () => {
 
   return (
     <AppContainer>
+      <CustomDragLayer />
       {lists.map((list) => (
         <Column text={list.text} key={list.id} id={list.id} />
       ))}

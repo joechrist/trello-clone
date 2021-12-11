@@ -62,6 +62,34 @@ export const appStateReducer = (
       });
       break;
     }
+    case "MOVE_TASK": {
+      // Destructuring payload
+      const { draggedItemId, hoveredItemId, sourceColumnId, targetColumnId } =
+        action.payload;
+
+      // Then we need to get the source and target list indices
+      const sourceListIndex = findItemIndexById(draft.lists, sourceColumnId);
+      const targetListIndex = findItemIndexById(draft.lists, targetColumnId);
+
+      // Then we need to find the indices of the dragged and hovered items:
+      const dragIndex = findItemIndexById(
+        draft.lists[sourceListIndex].tasks,
+        draggedItemId
+      );
+      const hoverIndex = hoveredItemId
+        ? findItemIndexById(draft.lists[targetListIndex].tasks, hoveredItemId)
+        : 0;
+
+      // After we have them we need to store the moved item in a variable:
+      const item = draft.lists[sourceListIndex].tasks[dragIndex];
+
+      // Now remove the task from the source list
+      draft.lists[sourceListIndex].tasks.splice(dragIndex, 1);
+
+      // Add the task to the target list
+      draft.lists[targetListIndex].tasks.splice(hoverIndex, 0, item);
+      break;
+    }
     case "MOVE_LIST": {
       const { draggedId, hoverId } = action.payload;
       const dragIndex = findItemIndexById(draft.lists, draggedId);

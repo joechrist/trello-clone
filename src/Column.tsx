@@ -3,19 +3,20 @@ import { AddNewItem } from "./AddNewItem";
 import { ColumnContainer, ColumnTitle } from "./styles";
 import { useAppState } from "./state/AppStateContext";
 import { Card } from "./Card";
-import { moveList, addTask } from "./state/actions";
+import { addTask, moveTask, moveList, setDraggedItem } from "./state/actions";
 import { useItemDrag } from "./utils/useItemDrag";
 import { useDrop } from "react-dnd";
 import { isHidden } from "./utils/isHidden";
-// import { DragItem } from "./DragItem";
 
 /**
  * If "text?:" -  text can be string or undefined
  * id: We’ll need this value to find the corresponding tasks.
+ * isPreview?: - To fix or prevent The Column Preview From Hiding
  * */
 type ColumnProps = {
   text: string;
   id: string;
+  isPreview?: boolean;
 };
 
 /**
@@ -23,7 +24,7 @@ type ColumnProps = {
  * Contain a new task (AddNewItem) in it with the column title and a Card with task
  * Grab children data of <card text="" />
  * */
-export const Column = ({ text, id }: ColumnProps) => {
+export const Column = ({ text, id, isPreview }: ColumnProps) => {
   // We’ll call useAppState to get the "getTasksByListId" function.
   const { draggedItem, getTasksByListId, dispatch } = useAppState();
 
@@ -36,7 +37,7 @@ export const Column = ({ text, id }: ColumnProps) => {
 
   //
   const [, drop] = useDrop({
-    accept: "COLUMN",
+    accept: ["COLUMN", "CARD"],
     hover() {
       if (!draggedItem) {
         return;
@@ -45,7 +46,18 @@ export const Column = ({ text, id }: ColumnProps) => {
         if (draggedItem.id === id) {
           return;
         }
+
         dispatch(moveList(draggedItem.id, id));
+      } else {
+        if (draggedItem.columnId === id) {
+          return;
+        }
+        if (tasks.length) {
+          return;
+        }
+
+        dispatch(moveTask(draggedItem.id, null, draggedItem.columnId, id));
+        dispatch(setDraggedItem({ ...draggedItem, columnId: id }));
       }
     },
   });
@@ -58,10 +70,14 @@ export const Column = ({ text, id }: ColumnProps) => {
   drag(drop(ref));
 
   return (
-    <ColumnContainer ref={ref} isHidden={isHidden(draggedItem, "COLUMN", id)}>
+    <ColumnContainer
+      isPreview={isPreview}
+      ref={ref}
+      isHidden={isHidden(draggedItem, "COLUMN", id, isPreview)}
+    >
       <ColumnTitle>{text}</ColumnTitle>
       {tasks.map((task) => (
-        <Card text={task.text} key={task.id} id={task.id} />
+        <Card columnId={id} text={task.text} key={task.id} id={task.id} />
       ))}
       <AddNewItem
         toggleButtonText="+ Add another task"
