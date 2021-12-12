@@ -10,7 +10,11 @@ type InjectedProps = {
 };
 
 /**
- *
+ * @ utility type Omit allows us to create a new type that won’t have
+ *   the keys of the InjectedProps type.
+ * @ utility type Omit constructs a new type removing the keys that you provide to it
+ * @ The query 'keyOf':  returns a union type that contains 
+     the keys of the type that you pass to it
  */
 type PropsWithoutInjected<TBaseProps> = Omit<TBaseProps, keyof InjectedProps>;
 
@@ -46,11 +50,12 @@ export function withInitialState<TProps>(
         }
         setIsLoading(false);
       };
+      //
       fetchInitialState();
     }, []);
 
     if (isLoading) {
-      return <div>Loading</div>;
+      return <div>Loading...</div>;
     }
 
     if (error) {
