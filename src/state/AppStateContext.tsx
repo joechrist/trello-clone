@@ -1,8 +1,9 @@
-import { createContext, useContext, Dispatch, FC } from "react";
+import { createContext, useContext, useEffect, Dispatch, FC } from "react";
 import { appStateReducer, AppState, List, Task } from "./appStateReducer";
 import { Action } from "./actions";
 import { useImmerReducer } from "use-immer";
 import { DragItem } from "../DragItem";
+import { save } from "../api";
 
 /**
  *  Define the application data and Data Structure for our app
@@ -10,21 +11,21 @@ import { DragItem } from "../DragItem";
  */
 const appData: AppState = {
   lists: [
-    // {
-    //   id: "0",
-    //   text: "To Do",
-    //   tasks: [{ id: "c0", text: "Generate app scaffold" }],
-    // },
-    // {
-    //   id: "1",
-    //   text: "In Progress",
-    //   tasks: [{ id: "c2", text: "Learn Typescript" }],
-    // },
-    // {
-    //   id: "2",
-    //   text: "Done",
-    //   tasks: [{ id: "c3", text: "Begin to use static typing" }],
-    // },
+    {
+      id: "0",
+      text: "To Do",
+      tasks: [{ id: "c0", text: "Generate app scaffold" }],
+    },
+    {
+      id: "1",
+      text: "In Progress",
+      tasks: [{ id: "c2", text: "Learn Typescript" }],
+    },
+    {
+      id: "2",
+      text: "Done",
+      tasks: [{ id: "c3", text: "Begin to use static typing" }],
+    },
   ],
   draggedItem: null,
 };
@@ -86,6 +87,13 @@ export const AppStateProvider: FC = ({ children }) => {
   const getTasksByListId = (id: string) => {
     return lists.find((list) => list.id === id)?.tasks || [];
   };
+
+  /**
+   * @ Call our save method with the value of the state every time the'state' is updated.
+   */
+  useEffect(() => {
+    save(state);
+  }, [state]);
 
   return (
     // value: Come from AppStateContextProps properties

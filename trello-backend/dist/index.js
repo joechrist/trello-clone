@@ -5,10 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var cors_1 = __importDefault(require("cors"));
-var body_parser_1 = __importDefault(require("body-parser"));
 var app = express_1.default();
 app.use(cors_1.default());
-app.use(body_parser_1.default.json());
+// Use express.json() instead of bodyParser that is depreciated
+app.use(express_1.default.urlencoded({ extended: true }));
+app.use(express_1.default.json());
 var port = 4000;
 var lists = [];
 app.post("/save", function (req, res) {
